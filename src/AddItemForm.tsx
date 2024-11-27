@@ -1,17 +1,27 @@
-// @flow 
-import * as React from 'react';
-import {Button} from './Button';
-import {ChangeEvent, KeyboardEvent, useState} from 'react';
+import {ChangeEvent, KeyboardEvent, useState} from "react";
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
-type AddItemFormPropsType = {
+type PropsType = {
     addItem: (title: string) => void
-};
-export const AddItemForm = ({addItem}: AddItemFormPropsType) => {
-    const [taskTitle, setTaskTitle] = useState('')
+}
+
+export const AddItemForm = ({addItem}: PropsType) => {
+
+    const [title, setTitle] = useState('')
     const [error, setError] = useState<string | null>(null)
 
-    const changeItemTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        setTaskTitle(event.currentTarget.value)
+    const addItemHandler = () => {
+        if (title.trim() !== '') {
+            addItem(title.trim())
+            setTitle('')
+        } else {
+            setError('Title is required')
+        }
+    }
+
+    const changeItemHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        setTitle(event.currentTarget.value)
     }
 
     const addItemOnKeyUpHandler = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -21,25 +31,42 @@ export const AddItemForm = ({addItem}: AddItemFormPropsType) => {
         }
     }
 
-    const addItemHandler = () => {
-        if (taskTitle.trim() !== '') {
-            addItem(taskTitle.trim())
-            setTaskTitle('')
-        } else {
-            setError('Title is required')
-        }
+    const styles = {
+        maxWidth: '38px',
+        maxHeight: '38px',
+        minWidth: '38px',
+        minHeight: '38px'
     }
 
     return (
         <div>
-            <input
-                className={error ? 'error' : ''}
-                value={taskTitle}
-                onChange={changeItemTitleHandler}
+            {/*<input*/}
+            {/*    className={error ? 'error' : ''}*/}
+            {/*    value={title}*/}
+            {/*    onChange={changeItemHandler}*/}
+            {/*    onKeyUp={addItemOnKeyUpHandler}*/}
+            {/*/>*/}
+
+            <TextField
+                error={!!error}
+                // helperText={error}
+                size='small'
+                id="outlined-basic"
+                label={error ? "Title is required" :" Type smth..."}
+                variant="outlined"
+                value={title}
+                onChange={changeItemHandler}
                 onKeyUp={addItemOnKeyUpHandler}
             />
-            <Button title={'+'} onClick={addItemHandler}/>
-            {error && <div className={'error-message'}>{error}</div>}
-        </div>
-    );
-};
+
+            <Button
+                variant="contained"
+                size="small"
+                onClick={addItemHandler}
+                style={styles}
+            >+</Button>
+                </div>
+    )
+}
+
+

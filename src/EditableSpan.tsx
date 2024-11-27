@@ -1,34 +1,33 @@
-import React, {ChangeEvent, useState} from 'react';
+import {ChangeEvent, useState} from "react";
 
-type EditableSpanPropsType = {
-    title: string
-    changeTitle: (newTitle: string) => void
-}
-
-export const EditableSpan = ({title, changeTitle}: EditableSpanPropsType) => {
-
-    const [editMode, setEditMode] = useState(false)
-    const [taskTitle, setTaskTitle] = useState(title)
-
-    const changeItemTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        setTaskTitle(event.currentTarget.value)
-    }
-    const onEditMode = () => setEditMode(true)
-    const offEditMode = () => {
-        changeTitle(taskTitle)
-        setEditMode(false)
-    }
-
-    return (
-            editMode ?
-                <input
-                    value={taskTitle}
-                    autoFocus
-                    onBlur={offEditMode}
-                    onChange={changeItemTitleHandler}
-                /> :
-                <span onDoubleClick={onEditMode}>{title}</span>
-        );
+type PropsType = {
+	value: string
+	onChange: (newTitle: string) => void
 };
 
-//export default EditableSpan;
+export const EditableSpan = ({value, onChange}: PropsType) => {
+	const [editMode, setEditMode] = useState(false)
+	const [title, setTitle] = useState(value)
+
+	const activateEditModeHandler = () => {
+		setEditMode(true)
+	}
+
+	const deactivateEditModeHandler = () => {
+		setEditMode(false)
+		onChange(title)
+	}
+
+	const changeTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
+		setTitle(event.currentTarget.value)
+	}
+
+	return (
+		<>
+			{editMode
+				? <input value={title} onChange={changeTitleHandler} onBlur={deactivateEditModeHandler} autoFocus/>
+				: <span onDoubleClick={activateEditModeHandler}>{value}</span>
+			}
+		</>
+	);
+};
